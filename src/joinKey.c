@@ -5,15 +5,21 @@
  * For license conditions see the license file or
  * http://eu-egee.org/license.html
  *
+ * Testprogram for Shamir secret sharing scheme 
+ * (joining for given split keys (NULL for not known keys))
+ *
+ * Usage:  ./joinKey keyLength splitKey1 splitKey2 .... splitKeyN
+ *
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: joinKey.c,v 1.1.1.1 2006-08-04 14:56:01 szamsu Exp $
+ * $Id: joinKey.c,v 1.2 2006-08-04 15:22:05 szamsu Exp $
  */
 
 #include <glite/security/ssss.h>
 
 // =============================     MAIN    ================================================
+/**  Testprogram for Shamir secret sharing scheme   */
 int main(int argc, char** argv){
   int keyLength=0;
   int nShares=0;
@@ -55,7 +61,7 @@ int main(int argc, char** argv){
       
     // Join keys
     jKey=(unsigned char *)joinKeySSS(keys,nShares);
-    printf("\nJoined key : %s",jKey);
+    printf("\nJoined key : %s\n",jKey);
   }
   return 0;
 }

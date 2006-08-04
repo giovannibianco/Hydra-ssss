@@ -4,7 +4,7 @@
 #  For license conditions see the license file or http://eu-egee.org/license.html
 #
 # Authors: Akos Frohner <Akos.Frohner@cern.ch>
-# Version info: $Id: Makefile.am,v 1.1.1.1 2006-08-04 14:56:01 szamsu Exp $
+# Version info: $Id: Makefile.am,v 1.2 2006-08-04 15:22:05 szamsu Exp $
 # Release: $Name: not supported by cvs2svn $
 
 
@@ -17,7 +17,7 @@ AM_CPPFLAGS = $(GLOBUS_THR_CFLAGS)
 
 lib_LTLIBRARIES = libglite_security_ssss.la 
 
-libglite_security_ssss_la_SOURCES = ssss.c shamir.c
+libglite_security_ssss_la_SOURCES = shamir.c shamir-funcs.c
 
 libglite_security_ssss_la_LIBADD = \
 	-L$(GLITE_LOCATION)/lib -lm -lcrypto

@@ -5,15 +5,19 @@
  * For license conditions see the license file or
  * http://eu-egee.org/license.html
  *
+ * Testprogram for Shamir secret sharing scheme (splitting for all shares)
+ * Usage:  ./splitKey keyLength nShares nNeeded [verbose] [key]
+ *
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: splitKey.c,v 1.1.1.1 2006-08-04 14:56:01 szamsu Exp $
+ * $Id: splitKey.c,v 1.2 2006-08-04 15:22:05 szamsu Exp $
  */
 
 #include <glite/security/ssss.h>
 
 // =============================     MAIN    ================================================
+/**  Testprogram for Shamir secret sharing scheme   */
 int main(int argc, char** argv){
   int keyLength;
   int nNeeded;
@@ -51,7 +55,8 @@ int main(int argc, char** argv){
     printf("\n\nSplit keys:");
     for(i=0;i<nShares;i++){
       printf("\nx = %i splitKey = %s",i+1,keys[i]);
-    } 
+    }
+    printf("\n");
   }
   return 0;
 }
