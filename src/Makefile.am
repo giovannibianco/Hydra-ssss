@@ -4,7 +4,7 @@
 #  For license conditions see the license file or http://eu-egee.org/license.html
 #
 # Authors: Akos Frohner <Akos.Frohner@cern.ch>
-# Version info: $Id: Makefile.am,v 1.2 2006-08-04 15:22:05 szamsu Exp $
+# Version info: $Id: Makefile.am,v 1.3 2006-08-07 15:25:03 szamsu Exp $
 # Release: $Name: not supported by cvs2svn $
 
 
@@ -40,4 +40,7 @@ glite_ssss_join_key_LDADD = libglite_security_ssss.la
 
 test_shamir_SOURCES = test-shamir.c
 test_shamir_LDADD = libglite_security_ssss.la
+
+noinst_SCRIPTS = test-shamir.sh
+TESTS = test-shamir.sh
 
