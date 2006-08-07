@@ -4,7 +4,7 @@
 #  For license conditions see the license file or http://eu-egee.org/license.html
 #
 #  Authors: Akos Frohner <Akos.Frohner@cern.ch>
-#  Version info: $Id: configure.ac,v 1.1.1.1 2006-08-04 14:56:01 szamsu Exp $
+#  Version info: $Id: configure.ac,v 1.2 2006-08-07 14:58:37 szamsu Exp $
 #  Release: $Name: not supported by cvs2svn $
 # 
 #
@@ -20,7 +20,7 @@ AC_CONFIG_SRCDIR([src/Makefile.am])
 AC_COPYRIGHT([Copyright (c) 2004 The EU EGEE Project
 See LICENCE file for details
 ])
-AC_REVISION([$Revision: 1.1.1.1 $])
+AC_REVISION([$Revision: 1.2 $])
 
 #Environment.
 WORKDIR=`pwd`
@@ -69,7 +69,8 @@ AC_CONFIG_FILES([\
 	Makefile \
 	src/Makefile \
     interface/Makefile \
-    doc/Makefile
+    doc/Makefile \
+    doc/apidoc/Makefile
 ])
 
 AC_OUTPUT
