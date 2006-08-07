@@ -12,7 +12,7 @@
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: test-shamir.c,v 1.2 2006-08-04 15:22:05 szamsu Exp $
+ * $Id: test-shamir.c,v 1.3 2006-08-07 15:24:36 szamsu Exp $
  */
 
 #include <glite/security/ssss.h>
@@ -36,35 +36,45 @@ int main(int argc, char** argv){
     printf("\nNo verbose and custom key 12345678 with size 8 chars. 7 split keys, 3 are needed to unlock.");
     printf("\n./test-shamir 8 7 3 0 12345678");
     printf("\n");
+    exit(EXIT_FAILURE);
   }
-  else{
-    verbose=0;
-    keyLength=atoi(&argv[1][0]);
 
-    // Allocate key
-    key=malloc(sizeof(char)*keyLength);
-    for(i=0;i<keyLength;i++) key[i]='0';
-    key[keyLength]='\0';
-    key=(unsigned char *) generateKey(keyLength);
+  verbose=0;
+  keyLength=atoi(&argv[1][0]);
 
-    nShares=atoi(&argv[2][0]);
-    nNeeded=atoi(&argv[3][0]);
-    if (argc > 4) verbose=atoi(&argv[4][0]);
-    if (argc > 5) key=(unsigned char *) &argv[5][0];
+  // Allocate key
+  key=malloc(sizeof(char)*keyLength);
+  for(i=0;i<keyLength;i++) key[i]='0';
+  key[keyLength]='\0';
+  key=(unsigned char *) generateKey(keyLength);
 
-    printf("\nKey to split : %s",key);
+  nShares=atoi(&argv[2][0]);
+  nNeeded=atoi(&argv[3][0]);
+  if (argc > 4) verbose=atoi(&argv[4][0]);
+  if (argc > 5) key=(unsigned char *) &argv[5][0];
 
-    // Split keys
-    keys= (unsigned char **) splitKeySSS(key,nShares,nNeeded);
+  printf("\nKey to split : %s",key);
 
-    printf("\n\nSplit keys:");
-    for(i=0;i<nShares;i++){
-      printf("\nx = %i splitKey = %s",i+1,keys[i]);
-    }
+  // Split keys
+  keys= (unsigned char **) splitKeySSS(key,nShares,nNeeded);
 
-    // Join keys
-    jKey=(unsigned char *) joinKeySSS(keys,nShares);
-    printf("\n\nJoined key : %s\n",jKey);
+  printf("\n\nSplit keys:");
+  for(i=0;i<nShares;i++){
+    printf("\nx = %i splitKey = %s",i+1,keys[i]);
   }
-  return 0;
+
+  // Join keys
+  jKey=(unsigned char *) joinKeySSS(keys,nShares);
+  printf("\n\nJoined key : %s\n",jKey);
+
+  i = strcmp(key, jKey);
+  if (0 == i) {
+    printf("The joined key is the same as the original.\n");
+  }
+  else {
+    printf("ERROR: the original and the joined key are not the same!\n");
+  }
+  return i;
 }
+
+/* vim:set sw=2 ts=2 et si: */
