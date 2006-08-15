@@ -4,7 +4,7 @@
 #  For license conditions see the license file or http://eu-egee.org/license.html
 #
 #  Authors: Akos Frohner <Akos.Frohner@cern.ch>
-#  Version info: $Id: configure.ac,v 1.2 2006-08-07 14:58:37 szamsu Exp $
+#  Version info: $Id: configure.ac,v 1.3 2006-08-15 16:14:13 szamsu Exp $
 #  Release: $Name: not supported by cvs2svn $
 # 
 #
@@ -20,7 +20,7 @@ AC_CONFIG_SRCDIR([src/Makefile.am])
 AC_COPYRIGHT([Copyright (c) 2004 The EU EGEE Project
 See LICENCE file for details
 ])
-AC_REVISION([$Revision: 1.2 $])
+AC_REVISION([$Revision: 1.3 $])
 
 #Environment.
 WORKDIR=`pwd`
@@ -48,7 +48,47 @@ AC_GLITE
 AC_GLITE_VERSION
 
 # Look for xsltproc & manpage stylesheets
-GLITE_DOCBOOK_MAN
+#GLITE_DOCBOOK_MAN
+# including the M4 file inline, since it is not defined in gLite:
+dnl
+dnl GLITE_DOCBOOK_MAN
+dnl
+dnl Check for xsltproc and the manpage stylesheets
+dnl
+AC_DEFUN([GLITE_DOCBOOK_MAN], [
+	AC_PATH_PROG([XSLTPROC], [xsltproc], [no])
+	if test "$XSLTPROC" != no; then
+		if test -z "$XLSTPROCFLAGS"; then
+			XSLTPROCFLAGS="--nonet"
+		fi
+		AC_CACHE_CHECK([for DocBook XML manpage stylesheets], [glite_cv_docbook_man],
+		[
+			cat >conftest.xml <<"EOF"
+<?xml version="1.0"?>
+	<!-- "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" @<:@ -->
+<?xml-stylesheet href="http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl" type="text/xsl"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+	"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" @<:@
+@:>@>
+<refentry id="test">
+<refmeta>
+    <refentrytitle>TEST</refentrytitle>
+    <manvolnum>test</manvolnum>
+</refmeta>
+</refentry>
+EOF
+			$XSLTPROC $XSLTPROCFLAGS http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl conftest.xml >/dev/null 2>/dev/null
+			result=$?
+			if test $result = 0; then
+				glite_cv_docbook_man=yes
+			else
+				glite_cv_docbook_man=no
+			fi
+		])
+		AC_SUBST([XSLTPROCFLAGS])
+	fi
+	AM_CONDITIONAL([HAVE_DOCBOOK_MAN], [test "$glite_cv_docbook_man" = yes])
+])
 
 have_globus=no
 AC_GLOBUS([], have_globus=yes, have_globus=no)
@@ -70,7 +110,8 @@ AC_CONFIG_FILES([\
 	src/Makefile \
     interface/Makefile \
     doc/Makefile \
-    doc/apidoc/Makefile
+    doc/apidoc/Makefile \
+    doc/man/Makefile
 ])
 
 AC_OUTPUT

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+       	"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
+>
+
+<refentry id="glite-ssss-join-key.1" revision="$Revision: 1.1 $">
+
+<refentryinfo>
+    <!-- These information are shown on the manpage -->
+    <author>
+	<firstname>Akos</firstname>
+	<surname>Frohner</surname>
+    </author>
+    <date>April 2006</date>
+    <productname>GLite</productname>
+    <title>gLite Security</title>
+
+    <!-- These information are not shown -->
+    <copyright>
+	<year>2006</year>
+	<holder>Members of the EGEE Collaboration</holder>
+    </copyright>
+</refentryinfo>
+
+<refmeta>
+    <refentrytitle>glite-ssss-join-key</refentrytitle>
+    <manvolnum>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+    <refname>glite-ssss-join-key</refname>
+    <refpurpose>
+        Splits a key into shares according to Shamir's Secret Sharing Scheme.
+    </refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+    <cmdsynopsis>
+	<command>glite-ssss-join-key</command>
+
+	<group>
+	    <arg choice="plain"><option>-h</option></arg>
+	</group>
+	<group>
+	    <arg choice="plain"><option>-q</option></arg>
+	</group>
+	<group>
+	    <arg choice="plain"><option>-V</option></arg>
+	</group>
+
+        <arg choice="plain"><option><replaceable>SHARES</replaceable></option></arg>
+        <arg choice="plain"><option><replaceable>NEEDED</replaceable></option></arg>
+        <arg choice="plain"><option><replaceable>KEY</replaceable></option></arg>
+
+    </cmdsynopsis>
+</refsynopsisdiv>
+
+<refsect1>
+    <title>DESCRIPTION</title>
+    <para>
+	<command>glite-ssss-join-key</command> is a command-line tool for 
+       TODO
+    </para>
+</refsect1>
+
+<refsect1>
+    <title>OPTIONS</title>
+    <variablelist>
+
+	<varlistentry>
+	    <term>
+		<group choice="plain">
+		    <arg choice="plain"><option>-h</option></arg>
+		</group>
+	    </term>
+
+	    <listitem><para>
+		Print a short help message on parameters and usage, and exit.
+	    </para></listitem>
+	</varlistentry>
+	<varlistentry>
+	    <term>
+		<group choice="plain">
+		    <arg choice="plain"><option>-q</option></arg>
+		</group>
+	    </term>
+
+	    <listitem><para>
+		Quiet operation.
+	    </para></listitem>
+	</varlistentry>
+	<varlistentry>
+	    <term>
+		<group choice="plain">
+		    <arg choice="plain"><option>-V</option></arg>
+		</group>
+	    </term>
+
+	    <listitem><para>
+		Print the version number and exit.
+	    </para></listitem>
+	</varlistentry>
+
+        <varlistentry>
+            <term><option><replaceable>ID</replaceable></option></term>
+            <listitem><para>
+                The ID of the key, which can be a logical file name or GUID.
+            </para></listitem>
+        </varlistentry>
+
+        <varlistentry>
+            <term><option><replaceable>INPUT_FILE</replaceable></option></term>
+            <listitem><para>
+                The name of the encrypted input file on the local filesystem.
+            </para></listitem>
+        </varlistentry>
+
+        <varlistentry>
+            <term><option><replaceable>OUTPUT_FILE</replaceable></option></term>
+            <listitem><para>
+                The name of the file on the local filesystem to write the decrypted output to.
+            </para></listitem>
+        </varlistentry>
+    </variablelist>
+</refsect1>
+
+<refsect1>
+    <title>ENVIRONMENT VARIABLES</title>
+
+    <variablelist>
+        <varlistentry>
+            <term><option><replaceable>GLITE_SSSS_LOG_LEVEL</replaceable></option></term>
+            <listitem><para>
+                Specifies the level of the log messages printed:
+                DEBUG, INFO, WARN or ERROR (default, if not defined).
+            </para></listitem>
+        </varlistentry>
+        <varlistentry>
+            <term><option><replaceable>GLITE_SSSS_LOG_FILE</replaceable></option></term>
+            <listitem><para>
+                Specifies the file, where messages are printed.
+                Defaults to stdout, if not defined.
+            </para></listitem>
+        </varlistentry>
+    </variablelist>							    	
+
+</refsect1>
+
+<refsect1>
+    <title>SEE ALSO</title>
+
+    <para>
+	<citerefentry>
+	    <refentrytitle>glite-ssss-join-key</refentrytitle>
+	    <manvolnum>1</manvolnum>
+	</citerefentry>
+    </para>
+</refsect1>
+
+<refsect1>
+    <title>EXAMPLES</title>
+    <variablelist>
+	<varlistentry>
+	    <term><userinput>glite-ssss-join-key 5 2 1234567812345678</userinput></term>
+	    <para>
+            Splits the key into 5 parts, of which 2 are needed to get it back.
+	    </para>
+	</varlistentry>
+	<varlistentry>
+	    <term><userinput>glite-ssss-join-key 7 3 12345678</userinput></term>
+	    <para>
+            Splits the key into 7 parts, of which 3 are needed to get it back.
+	    </para>
+	</varlistentry>
+    </variablelist>
+</refsect1>
+
+</refentry>
+<!-- vim: set ai sw=4: -->

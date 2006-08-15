@@ -6,10 +6,10 @@
 #  doc/Makefile.am file for the gLite Transfer URL Copy module
 #
 #  Authors: Akos Frohner <Akos.Frohner@cern.ch>
-#  Version info: $Id: Makefile.am,v 1.2 2006-08-07 14:58:37 szamsu Exp $
+#  Version info: $Id: Makefile.am,v 1.3 2006-08-15 16:14:13 szamsu Exp $
 #  Release: $Name: not supported by cvs2svn $
 
-SUBDIRS	= apidoc
+SUBDIRS	= apidoc man
 
 docdir = $(datadir)/doc/$(PACKAGE)
 #dist_doc_DATA = README
