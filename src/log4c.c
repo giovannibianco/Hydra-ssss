@@ -86,7 +86,7 @@ static char SSSS_I_log4c_time[SSSS_I_LOG4C_TIME_LENGTH];
 
 PUBLIC int SSSS_I_log4c_check_loglevel(SSSS_I_log4c_LogLevel loglevel) 
 {
-    if (loglevel < 0 || loglevel > SSSS_I_LOG4C_ERROR) return 0;
+    if (loglevel > SSSS_I_LOG4C_ERROR) return 0;
     if (SSSS_I_log4c_current_loglevel > loglevel) return 0;
     return 1;
 }
@@ -95,7 +95,7 @@ PUBLIC void SSSS_I_log4c_printf(SSSS_I_log4c_LogLevel loglevel,
     const char *file, const char *function, const int line,
     const char *format, ...) 
 {
-    if (loglevel < 0 || loglevel > SSSS_I_LOG4C_ERROR) return;
+    if (loglevel > SSSS_I_LOG4C_ERROR) return;
     if (SSSS_I_log4c_current_loglevel > loglevel) return;
 
     va_list ap;
