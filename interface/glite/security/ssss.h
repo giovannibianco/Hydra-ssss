@@ -1,7 +1,4 @@
-/** \file ssss.h
- *
- * Definition header file for shamir.c (SSS)
- *
+/** 
  * Definition for Shamir secret sharing (SSS) scheme.
  *
  * Based on "How to Share a Secret", by Adi Shamir, Communications of
@@ -26,52 +23,54 @@
  * two such numbers, the shared secrets will fit in a 16-bits integer
  * (unsigned short). The prime has to be less than \f$2^{16}\f$ in order to fit them
  * all. The largest such prime is 65521.
- *
- * examples: 
- * test-shamir.c
- * splitKey.c
- * joinKey.c
- *
- * These are simple split/join tests for Shamir secret sharing scheme.
- *
- * The scheme needs the header file cryptc.h to be included. 
  */
 
 /**
  * \mainpage Shamir Secret Sharing Scheme (SSSS)
  *  Documentation of SSSS used for splitting and joining of a key
-*/
+ */
 
-#ifndef SSSS_H
-#define SSSS_H
+#ifndef GLITE_SECURITY_SSSS_H
+#define GLITE_SECURITY_SSSS_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * Function for spliting of a key.
+ *
+ * @param key   The key in hexadecimal string format.
+ * @param nShares   The desired number of shares.
+ * @param nNeeded   The number of keys required to recover.
+ *
+ * @return The array of split keys in hexadecimal string format, if
+ * there was no error. If there was an error, NULL is returned.
+ *
+ * The caller is responsible for freeing the allocated strings in
+ * case of success.
+ */
+unsigned char ** glite_security_ssss_split_key(unsigned char * key, 
+    unsigned int nShares, unsigned int nNeeded);
+
+/**
+ * Function for joining of split keys.
+ *
+ * @param keys  Array of key pieces in hexadecimal string format.
+ * @param nShares   The number of shares.
+ *
+ * @return The joined key in hexadecimal string format, if there 
+ * was no error. If there was an error, NULL is returned.
+ *
+ * The caller is responsible for freeing the allocated string in
+ * case of success.
+ */
+unsigned char * glite_security_ssss_join_keys(unsigned char **keys, 
+    unsigned int nShares);
+
+#ifdef __cplusplus
+}
+#endif
 
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <openssl/rand.h>
-
-/**Global variable for extra verbose level */
-int verbose;
-/** Setting highest possible prime less than 2^16*/
-static const long prime = 65521;
-
-/**Function for spliting of a key*/
-unsigned char ** splitKeySSS(unsigned char * key,int nShares,int nNeeded);
-/**Function for joining of split keys*/
-unsigned char * joinKeySSS(unsigned char **keysf,int nShares);
-
-/**Function for getting a random hex string*/
-unsigned char * generateKey(int len);
-/**Function for calculating the modular inverse*/
-long inverseModulo(long n);
-/**How to handle errors */
-void handleError(char *thisFile,int thisLine,char* err);
-/**Test for correct length provided */
-void lengthTest(int keyLength);
-/**Test for valid hex characters */
-void hextest(char x);
-
-
-
-#endif // SSSS_H
+#endif /* GLITE_SECURITY_SSSS_H */

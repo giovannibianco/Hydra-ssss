@@ -10,10 +10,10 @@
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: shamir.c,v 1.2 2006-08-04 15:22:05 szamsu Exp $
+ * $Id: shamir.c,v 1.3 2006-08-15 14:22:51 szamsu Exp $
  */
 
-#include <glite/security/ssss.h>
+#include "ssssI.h"
 
 /*
  *                  ======================
@@ -26,40 +26,36 @@
 // later by the user of the routine. 
 
 /** Routine for splitting a hex key using SSSS*/
-unsigned char ** splitKeySSS(unsigned char * keyf,int nShares,int nNeeded){
-  int i,j,nBytes,iByte;
+unsigned char ** glite_security_ssss_split_key(unsigned char * keyf,
+    unsigned int nShares, unsigned int nNeeded) {
+  unsigned int i,j,nBytes,iByte;
   unsigned char **keysf;
-  int keyLength = strlen(keyf);
+  unsigned int keyLength = strlen(keyf);
   unsigned char bit[5];
-  char *str;
-  char s1[80];
 
   // Test if nShares provided
   if (nShares <= 0) {
-    sprintf(s1,"nShares (%i) must be greater than 0",nShares);
-    str=(char *)&s1;
-    handleError(__FILE__, __LINE__,str);
+    SSSS_I_log4c_ERROR("nShares (%i) must be greater than 0",nShares);
+    return NULL;
   }  
 
   // Test if nNeeded provided
   if (nNeeded <= 0) {
-    sprintf(s1,"nNeeded (%i) must be greater than 0",nNeeded);
-    str=(char *)&s1;
-    handleError(__FILE__, __LINE__,str);
+    SSSS_I_log4c_ERROR("nNeeded (%i) must be greater than 0",nNeeded);
+    return NULL;
   }
 
   // If not enough shares => EXIT
   if (nShares < nNeeded) {
-    sprintf(s1,"nShares (%i) < nNeeded (%i)",nShares,nNeeded);
-    str=(char *)&s1;
-    handleError(__FILE__, __LINE__,str);
+    SSSS_I_log4c_ERROR("nShares (%i) < nNeeded (%i)",nShares,nNeeded);
+    return NULL;
   }
   // Test keylength
-  lengthTest(keyLength);
+  if (! lengthTest(keyLength)) return NULL;
 
   // Test hex value for valid chars
   for(i=0;i<keyLength;i++)
-    hextest(keyf[i]);
+    if (! hextest(keyf[i])) return NULL;
 
   // Everything OK, continues.....
 
@@ -89,8 +85,12 @@ unsigned char ** splitKeySSS(unsigned char * keyf,int nShares,int nNeeded){
     for(i=0;i<nNeeded;i++) polynom[i]=0;
 
     // Randomizing polynom
-    if (! RAND_bytes((unsigned char *)&polynom[0],sizeof(polynom)))
-      handleError(__FILE__, __LINE__,"Error creating polynom");
+    if (! RAND_bytes((unsigned char *)&polynom[0],sizeof(polynom))) {
+      SSSS_I_log4c_ERROR("Error creating polynom");
+      for(i=0;i<nShares;i++) free(keysf[i]);
+      free(keysf);
+      return NULL;
+    }
     
     // Have to insert the secret for x=0, must convert hex string to short
     // Pointer to end of string
@@ -107,13 +107,13 @@ unsigned char ** splitKeySSS(unsigned char * keyf,int nShares,int nNeeded){
     // Setting key as polynom for x=0
     polynom[nNeeded-1]=s_key;
     
-    if(verbose!=0){
+    if(SSSS_I_log4c_check_loglevel(SSSS_I_LOG4C_DEBUG)){
       printf("\nRandom polynom:\n");    
       for(i=0;i<nNeeded;i++)
-	printf("%i (x^%i) ",polynom[i],nNeeded-1-i);
+        printf("%i (x^%i) ",polynom[i],nNeeded-1-i);
       printf("\nHex: ");    
       for(i=0;i<nNeeded;i++)
-	printf("x^%i=%x ",nNeeded-1-i,polynom[i]);
+        printf("x^%i=%x ",nNeeded-1-i,polynom[i]);
     }
     
     //--------------------------------------------------
@@ -126,35 +126,35 @@ unsigned char ** splitKeySSS(unsigned char * keyf,int nShares,int nNeeded){
     
     for(xx=1;xx<=nShares;xx++){  
       xtemp=0;
-      if(verbose!=0) printf("\nx=%li ",xx );
+      SSSS_I_log4c_DEBUG("\nx=%li ",xx );
       for(i=0;i<nNeeded;i++){
-	//xt=((unsigned long) pow((xx),(nNeeded-1-i)))%prime;
-	xt=1;
-	for(j=0;j<(nNeeded-1-i);j++){
-	  xt=(unsigned long) (xt*xx)%prime;
-	  //printf(" i=%i j=%i xt=%i ",i,j,xt);
-	}
-	
-	while(xt<0) xt+=prime;
-	xtt= (unsigned long) (polynom[i]*xt)%prime;
-	while(xtt<0) xtt+=prime;
-	xtemp = (xtemp+xtt)%prime;
-	while(xtemp<0) xtemp+=prime;
-	if(verbose!=0) printf("i=%i (%i) => %li & %li ",i,(nNeeded-1-i),xt,xtt);
+        //xt=((unsigned long) pow((xx),(nNeeded-1-i)))%prime;
+        xt=1;
+        for(j=0;j<(nNeeded-1-i);j++){
+          xt=(unsigned long) (xt*xx)%prime;
+          //printf(" i=%i j=%i xt=%i ",i,j,xt);
+        }
+        
+        while(xt<0) xt+=prime;
+        xtt= (unsigned long) (polynom[i]*xt)%prime;
+        while(xtt<0) xtt+=prime;
+        xtemp = (xtemp+xtt)%prime;
+        while(xtemp<0) xtemp+=prime;
+        SSSS_I_log4c_DEBUG("i=%i (%i) => %li & %li ",i,(nNeeded-1-i),xt,xtt);
       }
-      if(verbose!=0) printf("y=%li",xtemp);
+      SSSS_I_log4c_DEBUG("y=%li",xtemp);
      
       for(i=0;i<4;i++) bit[i]='0';
       bit[4]='\0';
       sprintf(bit,"%4lx",xtemp);
       
       for(i=0;i<4;i++){
-	keysf[xx-1][i+(((iByte-1))*4)]=bit[i];
-	if(keysf[xx-1][i+(((iByte-1))*4)]==' ') keysf[xx-1][i+(((iByte-1))*4)]='0';
+        keysf[xx-1][i+(((iByte-1))*4)]=bit[i];
+        if(keysf[xx-1][i+(((iByte-1))*4)]==' ') keysf[xx-1][i+(((iByte-1))*4)]='0';
       }
       // Add terminating 0
       if(iByte==nBytes){
-	keysf[xx-1][nBytes*4]='\0';
+        keysf[xx-1][nBytes*4]='\0';
       }
     }
     
@@ -164,7 +164,8 @@ unsigned char ** splitKeySSS(unsigned char * keyf,int nShares,int nNeeded){
 
 // ============          joinKeySSS   =============================================
 /** Routine for joining a hex key using SSSS*/
-unsigned char * joinKeySSS(unsigned char **keysf,int nShares){
+unsigned char * glite_security_ssss_join_keys(unsigned char **keysf,
+  unsigned int nShares){
   unsigned char * jKey;
   unsigned long x[nShares];
   long i,j,ii,jj,k;
@@ -177,14 +178,11 @@ unsigned char * joinKeySSS(unsigned char **keysf,int nShares){
   long  nn,nBytes,iByte;
   unsigned char bit[5];
   long keyLength,start;
-  char *str;
-  char s1[80];
 
   // Test if nShares provided
   if (nShares <= 0) {
-    sprintf(s1,"nShares (%i) must be greater than 0",nShares);
-    str=(char *)&s1;
-    handleError(__FILE__, __LINE__,str);
+    SSSS_I_log4c_ERROR("nShares (%i) must be greater than 0",nShares);
+    return NULL;
   }  
   // Set keyLength for first well defined string
   start=0;
@@ -197,7 +195,8 @@ unsigned char * joinKeySSS(unsigned char **keysf,int nShares){
     if(keysf[i]!=NULL){
       
       if(keyLength!=strlen(keysf[i])){
-	handleError(__FILE__, __LINE__,"All the split keys have to have the same length");
+        SSSS_I_log4c_ERROR("All the split keys have to have the same length");
+        return NULL;
       }    
     }
   }
@@ -215,9 +214,9 @@ unsigned char * joinKeySSS(unsigned char **keysf,int nShares){
     }
   }
 
-  if(verbose!=0) printf("\nJoining key with %li split keys...",nn);
+  SSSS_I_log4c_DEBUG("Joining key with %li split keys...",nn);
 
-  lengthTest(keyLength);
+  if (! lengthTest(keyLength)) return NULL;
 
   // Setting loop variable
   nBytes= (int) keyLength/4;
@@ -228,20 +227,19 @@ unsigned char * joinKeySSS(unsigned char **keysf,int nShares){
   for(i=0;i<(nBytes*4);i++) *(jKey+i)='0';
   *(jKey+(nBytes*4))='\0';
 
-  if(verbose!=0){
+  if(SSSS_I_log4c_check_loglevel(SSSS_I_LOG4C_DEBUG)){
     for(i=0;i<nShares;i++){
       printf("\nsplitKey  x=%li ",x[i]);
       for(iByte=1;iByte<=nBytes;iByte++){
-	
-	if(inarray[i]!=0){
-	  for(j=0;j<4;j++){
-	    bit[j]=keysf[i][j+((iByte-1)*4)];
-	  }
-	  bit[4]='\0';
-	  for(k=0;k<4;k++)
-	    printf("%c",bit[k]);
-	  printf(" (%li) ",strtol(bit,NULL,16)); 
-	}
+        if(inarray[i]!=0){
+          for(j=0;j<4;j++){
+            bit[j]=keysf[i][j+((iByte-1)*4)];
+          }
+          bit[4]='\0';
+          for(k=0;k<4;k++)
+            printf("%c",bit[k]);
+          printf(" (%li) ",strtol(bit,NULL,16)); 
+        }
       }
     }
   }
@@ -253,17 +251,20 @@ unsigned char * joinKeySSS(unsigned char **keysf,int nShares){
     for(i=0;i<nShares;i++){
       if(inarray[i]!=0){
 
-	for(j=0;j<4;j++){
-	  ii=j+((iByte-1)*4);
-	  bit[j]=keysf[i][ii];
-	  // Test hex value
-	  hextest(bit[j]);
-	}
-	bit[4]='\0';
-	
-	ikeys[i]=strtol(bit,NULL,16);
+        for(j=0;j<4;j++){
+          ii=j+((iByte-1)*4);
+          bit[j]=keysf[i][ii];
+          // Test hex value
+          if (! hextest(bit[j])) {
+            free(jKey);
+            return NULL;
+          }
+        }
+        bit[4]='\0';
+
+        ikeys[i]=strtol(bit,NULL,16);
       }else{
-	ikeys[i]=0;
+        ikeys[i]=0;
       }
     }
     
@@ -271,31 +272,34 @@ unsigned char * joinKeySSS(unsigned char **keysf,int nShares){
     for (i=0;i<nShares;i++){
       ii=i+1;
       if(inarray[i]!=0){
-	denom=1;
-	num=1;
-	for (j=0;j<nShares;j++){
-	  jj=j+1;
-	  if(inarray[j]!=0){
-	    if(jj!=ii){
-	      num*=-jj%prime;
-	      denom*=(ii-jj)%prime;
-	      num=num%prime;
-	      denom=denom%prime;
-	    }
-	  }
-	}
-	num=num%prime;
-	denom=denom%prime;
-	// Start array from 0
-	while(num<0) num+=prime;
-	while(denom<0) denom+=prime;
-	denom=inverseModulo(denom);
-	while(denom<0) denom+=prime;
-	c[i]= (unsigned long) (num*denom)%prime;
-	while(c[i]<0) c[i]+=prime;
-	if(verbose!=0) printf("\nc=%li",c[i]);
+        denom=1;
+        num=1;
+        for (j=0;j<nShares;j++){
+          jj=j+1;
+          if(inarray[j]!=0){
+            if(jj!=ii){
+              num*=-jj%prime;
+              denom*=(ii-jj)%prime;
+              num=num%prime;
+              denom=denom%prime;
+            }
+          }
+        }
+        num=num%prime;
+        denom=denom%prime;
+        // Start array from 0
+        while(num<0) num+=prime;
+        while(denom<0) denom+=prime;
+        if (! inverseModulo(denom, &denom)) {
+          free(jKey);
+          return NULL;
+        }
+        while(denom<0) denom+=prime;
+        c[i]= (unsigned long) (num*denom)%prime;
+        while(c[i]<0) c[i]+=prime;
+        SSSS_I_log4c_DEBUG("\nc=%li",c[i]);
       }else{
-	c[i]=0;
+        c[i]=0;
       }
     }
     
@@ -304,18 +308,20 @@ unsigned char * joinKeySSS(unsigned char **keysf,int nShares){
     isecret=0;
     for  (i=0;i<nShares;i++){
       if(inarray[i]!=0){
-	xt=0;
-	xt= (unsigned long) (c[i]*ikeys[i])%prime;
-	while(xt<0) xt+=prime;
-	isecret= (unsigned long) (isecret+xt)%prime;
-	while(isecret<0) isecret+=prime;
-	if(verbose!=0) printf("\nc[%li] = %lu x(%li)=%lu ==> %lu %lu %lu %li",i,c[i],i,ikeys[i],(unsigned long) c[i]*ikeys[i],(unsigned long)(c[i]*ikeys[i])/prime,xt,isecret);
+        xt=0;
+        xt= (unsigned long) (c[i]*ikeys[i])%prime;
+        while(xt<0) xt+=prime;
+        isecret= (unsigned long) (isecret+xt)%prime;
+        while(isecret<0) isecret+=prime;
+        SSSS_I_log4c_DEBUG("c[%li] = %lu x(%li)=%lu ==> %lu %lu %lu %li",
+          i,c[i],i,ikeys[i],(unsigned long) c[i]*ikeys[i],
+          (unsigned long)(c[i]*ikeys[i])/prime,xt,isecret);
       }    
     }
     
     
     isecret=isecret%prime;
-    if(verbose!=0) printf("\nIsecret: %li",isecret);
+    SSSS_I_log4c_DEBUG("Isecret: %li",isecret);
     
     
     for(i=0;i<4;i++) bit[i]='0';
@@ -328,15 +334,15 @@ unsigned char * joinKeySSS(unsigned char **keysf,int nShares){
   }
   *(jKey+(nBytes*4))='\0';
 
-  if(verbose!=0){
-    printf("\nJoined Key bits= ");
+  if(SSSS_I_log4c_check_loglevel(SSSS_I_LOG4C_DEBUG)){
+    SSSS_I_log4c_DEBUG("Joined Key bits= ");
     for(iByte=1;iByte<=nBytes;iByte++){
       for(i=0;i<4;i++){
-	bit[i]=*(jKey+i+((iByte-1)*4));
+        bit[i]=*(jKey+i+((iByte-1)*4));
       }
       bit[4]='\0';
       for(j=0;j<4;j++)
-	printf("%c",bit[j]);
+        printf("%c",bit[j]);
       printf(" (%li) ",strtol(bit,NULL,16));
     }
   }
@@ -344,3 +350,4 @@ unsigned char * joinKeySSS(unsigned char **keysf,int nShares){
   return jKey;
 }
 
+// vim:set ts=2 sw=2 et:

@@ -7,20 +7,20 @@
  *
  * Testprogram for Shamir secret sharing scheme 
  *      (splitting and joining for all shares)
- * Usage: ./test-shamir keyLength nShares nNeeded [verbose] [key]
+ * Usage: ./test-shamir nShares nNeeded key
  *
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: test-shamir.c,v 1.3 2006-08-07 15:24:36 szamsu Exp $
+ * $Id: test-shamir.c,v 1.4 2006-08-15 14:22:51 szamsu Exp $
  */
 
 #include <glite/security/ssss.h>
+#include "stdlib.h"
 
 // =============================     MAIN    ================================================
 /**  Testprogram for Shamir secret sharing scheme   */
 int main(int argc, char** argv){
-  int keyLength=0;
   int nNeeded=0;
   int nShares=0;
   int i;
@@ -28,35 +28,25 @@ int main(int argc, char** argv){
   unsigned char *jKey;
   unsigned char ** keys;
 
-  if(argc < 4 || argc > 6){
-    printf("Usage: progname keyLength nShares nNeeded [verbose] [key]");
+  if(argc < 3){
+    printf("Usage: progname nShares nNeeded key");
     printf("\nExamples: ");
-    printf("\nNo verbose and random generated key with size 32 chars. 5 split keys 2 are needed to unlock");
-    printf("\n./test-shamir 32 5 2");
-    printf("\nNo verbose and custom key 12345678 with size 8 chars. 7 split keys, 3 are needed to unlock.");
-    printf("\n./test-shamir 8 7 3 0 12345678");
+    printf("\n5 split keys 2 are needed to unlock");
+    printf("\n./test-shamir 5 2 123456781234678");
+    printf("\n7 split keys, 3 are needed to unlock.");
+    printf("\n./test-shamir 7 3 12345678");
     printf("\n");
     exit(EXIT_FAILURE);
   }
 
-  verbose=0;
-  keyLength=atoi(&argv[1][0]);
-
-  // Allocate key
-  key=malloc(sizeof(char)*keyLength);
-  for(i=0;i<keyLength;i++) key[i]='0';
-  key[keyLength]='\0';
-  key=(unsigned char *) generateKey(keyLength);
-
-  nShares=atoi(&argv[2][0]);
-  nNeeded=atoi(&argv[3][0]);
-  if (argc > 4) verbose=atoi(&argv[4][0]);
-  if (argc > 5) key=(unsigned char *) &argv[5][0];
+  nShares=atoi(argv[1]);
+  nNeeded=atoi(argv[2]);
+  key = argv[3];
 
   printf("\nKey to split : %s",key);
 
   // Split keys
-  keys= (unsigned char **) splitKeySSS(key,nShares,nNeeded);
+  keys = glite_security_ssss_split_key(key, nShares, nNeeded);
 
   printf("\n\nSplit keys:");
   for(i=0;i<nShares;i++){
@@ -64,7 +54,7 @@ int main(int argc, char** argv){
   }
 
   // Join keys
-  jKey=(unsigned char *) joinKeySSS(keys,nShares);
+  jKey = glite_security_ssss_join_keys(keys, nShares);
   printf("\n\nJoined key : %s\n",jKey);
 
   i = strcmp(key, jKey);

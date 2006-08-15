@@ -6,57 +6,81 @@
  * http://eu-egee.org/license.html
  *
  * Testprogram for Shamir secret sharing scheme (splitting for all shares)
- * Usage:  ./splitKey keyLength nShares nNeeded [verbose] [key]
+ * Usage:  ./splitKey nShares nNeeded key
  *
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: splitKey.c,v 1.2 2006-08-04 15:22:05 szamsu Exp $
+ * $Id: splitKey.c,v 1.3 2006-08-15 14:22:51 szamsu Exp $
  */
 
-#include <glite/security/ssss.h>
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
-// =============================     MAIN    ================================================
-/**  Testprogram for Shamir secret sharing scheme   */
+#include <glite/security/ssss.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#define PROGNAME "glite-ssss-split-key"
+
+void print_usage_and_die (int exit_code) {
+  printf("\n");
+  printf("<%s> Version %s by (C) EGEE\n", PROGNAME, PACKAGE_VERSION);
+  printf("usage: %s [-q] [-h] <nShares> <nNeeded> <key>\n", PROGNAME);
+  printf("\nExamples: ");
+  printf("\n5 split keys 2 are needed to unlock");
+  printf("\n./splitKey 5 2 1234567812345678");
+  printf("\n7 split keys, 3 are needed to unlock.");
+  printf("\n./splitKey 7 3 12345678");
+  printf("\n");
+  exit(exit_code); 
+}
+
 int main(int argc, char** argv){
-  int keyLength;
   int nNeeded;
   int nShares;
-  int i;
+  int i, flag;
+  int verbose = 1;    
   unsigned char *key;
   unsigned char ** keys;
 
-  if(argc < 4 || argc > 6){
-    printf("Usage: progname keyLength nShares nNeeded [verbose] [key]");
-    printf("\nExamples: ");
-    printf("\nNo verbose and random generated key with size 32 chars. 5 split keys 2 are needed to unlock");
-    printf("\n./splitKey 32 5 2");
-    printf("\nNo verbose and custom key 12345678 with size 8 chars. 7 split keys, 3 are needed to unlock.");
-    printf("\n./splitKey 8 7 3 0 12345678");
-  }
-  else{
-    verbose=0;
-    keyLength=atoi(&argv[1][0]);
-    key=malloc(sizeof(char)*keyLength);
-    for(i=0;i<keyLength;i++) key[i]='0';
-    key[keyLength]='\0';
-    key=(unsigned char *) generateKey(keyLength);
-    
-    nShares=atoi(&argv[2][0]);
-    nNeeded=atoi(&argv[3][0]);
-    if (argc > 4) verbose=atoi(&argv[4][0]);
-    if (argc > 5) key=(unsigned char *) &argv[5][0];
-    
-    printf("\nKey to split: %s",key);
-
-    // Split keys 
-    keys= (unsigned char **) splitKeySSS(key,nShares,nNeeded);
-    
-    printf("\n\nSplit keys:");
-    for(i=0;i<nShares;i++){
-      printf("\nx = %i splitKey = %s",i+1,keys[i]);
+  while ((flag = getopt (argc, argv, "hq")) != -1) {
+    switch (flag) {
+      case 'h':
+        print_usage_and_die(EXIT_SUCCESS);
+        break;
+      case 'q':
+        verbose = 0;
+        break;
+      default:
+        print_usage_and_die(EXIT_FAILURE);
+        break;
     }
-    printf("\n");
   }
+
+  if(argc != (optind + 3)){
+    print_usage_and_die(EXIT_FAILURE);
+  }
+
+  nShares = atoi(argv[optind + 0]);
+  nNeeded = atoi(argv[optind + 1]);
+  key = argv[optind + 2];
+  
+  if (verbose) printf("\nKey to split (%d of %d): %s", nNeeded, nShares, key);
+
+  // Split keys 
+  keys = glite_security_ssss_split_key(key,nShares,nNeeded);
+  
+  if (verbose) printf("\n\nSplit keys:");
+  for(i=0;i<nShares;i++){
+    if (verbose) printf("\n%i. splitKey = ",i+1);
+    printf("%s ", keys[i]);
+  }
+  printf("\n");
+
   return 0;
 }
+
+// vim:set ts=2 sw=2 et:
