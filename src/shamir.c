@@ -10,7 +10,7 @@
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: shamir.c,v 1.3 2006-08-15 14:22:51 szamsu Exp $
+ * $Id: shamir.c,v 1.4 2006-08-15 15:24:53 taspelie Exp $
  */
 
 #include "ssssI.h"
@@ -27,7 +27,7 @@
 
 /** Routine for splitting a hex key using SSSS*/
 unsigned char ** glite_security_ssss_split_key(unsigned char * keyf,
-    unsigned int nShares, unsigned int nNeeded) {
+  unsigned int nShares, unsigned int nNeeded) {
   unsigned int i,j,nBytes,iByte;
   unsigned char **keysf;
   unsigned int keyLength = strlen(keyf);
@@ -60,7 +60,7 @@ unsigned char ** glite_security_ssss_split_key(unsigned char * keyf,
   // Everything OK, continues.....
 
   // Setting loop variable
-  nBytes= (int) keyLength/4;
+  nBytes= (unsigned int) keyLength/4;
 
   // Allocate splitkeys
   keysf = (unsigned char **) malloc(nShares*sizeof(char *));
@@ -134,12 +134,8 @@ unsigned char ** glite_security_ssss_split_key(unsigned char * keyf,
           xt=(unsigned long) (xt*xx)%prime;
           //printf(" i=%i j=%i xt=%i ",i,j,xt);
         }
-        
-        while(xt<0) xt+=prime;
         xtt= (unsigned long) (polynom[i]*xt)%prime;
-        while(xtt<0) xtt+=prime;
         xtemp = (xtemp+xtt)%prime;
-        while(xtemp<0) xtemp+=prime;
         SSSS_I_log4c_DEBUG("i=%i (%i) => %li & %li ",i,(nNeeded-1-i),xt,xtt);
       }
       SSSS_I_log4c_DEBUG("y=%li",xtemp);
@@ -168,16 +164,19 @@ unsigned char * glite_security_ssss_join_keys(unsigned char **keysf,
   unsigned int nShares){
   unsigned char * jKey;
   unsigned long x[nShares];
-  long i,j,ii,jj,k;
+  long ii,jj,k;
+  unsigned int i,j;
   long num=0;
   long denom=0;
   unsigned long isecret=0; 
   long inarray[nShares];
   unsigned long c[nShares];
   unsigned long ikeys[nShares];
-  long  nn,nBytes,iByte;
+  long  nn;
+  unsigned int iByte,nBytes; 
   unsigned char bit[5];
-  long keyLength,start;
+  unsigned int keyLength;
+  unsigned int start;
 
   // Test if nShares provided
   if (nShares <= 0) {
@@ -188,7 +187,7 @@ unsigned char * glite_security_ssss_join_keys(unsigned char **keysf,
   start=0;
   for (i=0;keysf[i]==NULL;i++)
     start=i+1;
-  keyLength=strlen(keysf[start]);
+  keyLength=(unsigned int) strlen(keysf[start]);
 
   // Check length of split-keys
   for (i=start;i<nShares;i++){
@@ -219,7 +218,7 @@ unsigned char * glite_security_ssss_join_keys(unsigned char **keysf,
   if (! lengthTest(keyLength)) return NULL;
 
   // Setting loop variable
-  nBytes= (int) keyLength/4;
+  nBytes= (unsigned int) keyLength/4;
   jKey=malloc(sizeof(char)*keyLength);
   
   
@@ -296,7 +295,6 @@ unsigned char * glite_security_ssss_join_keys(unsigned char **keysf,
         }
         while(denom<0) denom+=prime;
         c[i]= (unsigned long) (num*denom)%prime;
-        while(c[i]<0) c[i]+=prime;
         SSSS_I_log4c_DEBUG("\nc=%li",c[i]);
       }else{
         c[i]=0;
@@ -310,9 +308,7 @@ unsigned char * glite_security_ssss_join_keys(unsigned char **keysf,
       if(inarray[i]!=0){
         xt=0;
         xt= (unsigned long) (c[i]*ikeys[i])%prime;
-        while(xt<0) xt+=prime;
         isecret= (unsigned long) (isecret+xt)%prime;
-        while(isecret<0) isecret+=prime;
         SSSS_I_log4c_DEBUG("c[%li] = %lu x(%li)=%lu ==> %lu %lu %lu %li",
           i,c[i],i,ikeys[i],(unsigned long) c[i]*ikeys[i],
           (unsigned long)(c[i]*ikeys[i])/prime,xt,isecret);

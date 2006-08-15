@@ -12,18 +12,20 @@
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: test-shamir.c,v 1.4 2006-08-15 14:22:51 szamsu Exp $
+ * $Id: test-shamir.c,v 1.5 2006-08-15 15:25:20 taspelie Exp $
  */
 
 #include <glite/security/ssss.h>
 #include "stdlib.h"
+#include "stdio.h"
+#include "string.h"
 
 // =============================     MAIN    ================================================
 /**  Testprogram for Shamir secret sharing scheme   */
 int main(int argc, char** argv){
-  int nNeeded=0;
-  int nShares=0;
-  int i;
+  unsigned int nNeeded=0;
+  unsigned int nShares=0;
+  unsigned int i;
   unsigned char *key;
   unsigned char *jKey;
   unsigned char ** keys;
@@ -39,22 +41,30 @@ int main(int argc, char** argv){
     exit(EXIT_FAILURE);
   }
 
-  nShares=atoi(argv[1]);
-  nNeeded=atoi(argv[2]);
+  nShares= (unsigned int) atoi(argv[1]);
+  nNeeded= (unsigned int) atoi(argv[2]);
   key = argv[3];
 
-  printf("\nKey to split : %s",key);
+  printf("\nKey to split (%d of %d): %s", nNeeded, nShares, key);
 
   // Split keys
   keys = glite_security_ssss_split_key(key, nShares, nNeeded);
+  if(keys==NULL){
+    printf("\n\nError in splitting key. Check logfile");
+    return 1;
+  }
 
   printf("\n\nSplit keys:");
   for(i=0;i<nShares;i++){
     printf("\nx = %i splitKey = %s",i+1,keys[i]);
   }
-
+  
   // Join keys
   jKey = glite_security_ssss_join_keys(keys, nShares);
+  if(jKey==NULL){
+    printf("\n\nError in joining key. Check logfile");
+    return 2;
+  }
   printf("\n\nJoined key : %s\n",jKey);
 
   i = strcmp(key, jKey);
@@ -65,6 +75,7 @@ int main(int argc, char** argv){
     printf("ERROR: the original and the joined key are not the same!\n");
   }
   return i;
+  
 }
 
 /* vim:set sw=2 ts=2 et si: */
