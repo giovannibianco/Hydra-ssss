@@ -13,7 +13,7 @@
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: joinKey.c,v 1.4 2006-08-15 15:25:43 taspelie Exp $
+ * $Id: joinKey.c,v 1.5 2006-08-15 15:51:10 szamsu Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -28,7 +28,7 @@
 
 #define PROGNAME "glite-ssss-join-key"
 
-void print_usage_and_die (int exit_code) {
+static void print_usage_and_die (int exit_code) {
     printf("\n");
     printf("<%s> Version %s by (C) EGEE\n", PROGNAME, PACKAGE_VERSION);
     printf("usage: %s [-q] [-h] (join-key|NULL)...\n", PROGNAME);
