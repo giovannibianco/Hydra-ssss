@@ -64,9 +64,44 @@ unsigned char ** glite_security_ssss_split_key(unsigned char * key,
  * was no error. If there was an error, NULL is returned.
  *
  * The caller is responsible for freeing the allocated string in
- * case of success.
+ * case of success. The order of the submitted keys (**keys) does matter. 
+ * If a key is missing, e.g. due to a server being down, this key 
+ * should be set to NULL for the corresponding index in **keys. 
  */
 unsigned char * glite_security_ssss_join_keys(unsigned char **keys, 
+    unsigned int nShares);
+
+/**
+ * Function for spliting of a asci key for passwords.
+ *
+ * @param key   The key in hexadecimal string format.
+ * @param nShares   The desired number of shares.
+ * @param nNeeded   The number of keys required to recover.
+ *
+ * @return The array of split keys in hexadecimal string format, if
+ * there was no error. If there was an error, NULL is returned.
+ *
+ * The caller is responsible for freeing the allocated strings in
+ * case of success.
+ */
+unsigned char ** glite_security_ssss_split_passwd(unsigned char * key, 
+    unsigned int nShares, unsigned int nNeeded);
+
+/**
+ * Function for joining of split ascii keys for passwords.
+ *
+ * @param keys  Array of key pieces in hexadecimal string format.
+ * @param nShares   The number of shares.
+ *
+ * @return The joined key in hexadecimal string format, if there 
+ * was no error. If there was an error, NULL is returned.
+ *
+ * The caller is responsible for freeing the allocated string in
+ * case of success. The order of the submitted keys (**keys) does matter. 
+ * If a key is missing, e.g. due to a server being down, this key 
+ * should be set to NULL for the corresponding index in **keys. 
+ */
+unsigned char * glite_security_ssss_join_passwd(unsigned char **keys, 
     unsigned int nShares);
 
 #ifdef __cplusplus
