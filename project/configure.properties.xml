@@ -9,7 +9,7 @@
     Configuration build properties file for the gLite Security SSSS component
 
     Authors: Akos Frohner <Akos.Frohner@cern.ch>
-    Version info: $Id: configure.properties.xml,v 1.1.1.1 2006-08-04 14:56:01 szamsu Exp $
+    Version info: $Id: configure.properties.xml,v 1.2 2006-08-16 12:05:11 szamsu Exp $
 
 
 -->
@@ -21,11 +21,9 @@
 --with-interface-version=${interface.version}
 --prefix=${stage.abs.dir}
 --mandir=${prefix}/share/man
---with-globus-prefix=${with.globus.prefix} 
---with-globus-thr-flavor=${with.globus.dbg.thr.flavor} 
---with-globus-nothr-flavor=${with.globus.dbg.nothr.flavor} 
 --with-glite-location=${with.glite.location}
 --with-dist-location=${with.dist.location}
---mandir=${prefix}/share/man"/>
-
+--with-globus-prefix=${with.globus.prefix} 
+--with-globus-thr-flavor=${with.globus.dbg.thr.flavor} 
+--with-globus-nothr-flavor=${with.globus.dbg.nothr.flavor}"/>
 </project>

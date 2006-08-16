@@ -4,7 +4,7 @@
 #  For license conditions see the license file or http://eu-egee.org/license.html
 #
 #  Authors: Akos Frohner <Akos.Frohner@cern.ch>
-#  Version info: $Id: configure.ac,v 1.3 2006-08-15 16:14:13 szamsu Exp $
+#  Version info: $Id: configure.ac,v 1.4 2006-08-16 12:05:10 szamsu Exp $
 #  Release: $Name: not supported by cvs2svn $
 # 
 #
@@ -20,7 +20,7 @@ AC_CONFIG_SRCDIR([src/Makefile.am])
 AC_COPYRIGHT([Copyright (c) 2004 The EU EGEE Project
 See LICENCE file for details
 ])
-AC_REVISION([$Revision: 1.3 $])
+AC_REVISION([$Revision: 1.4 $])
 
 #Environment.
 WORKDIR=`pwd`
@@ -43,13 +43,17 @@ fi
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
+# Set Globus Properties
+have_globus=no
+AC_GLOBUS([], have_globus=yes, have_globus=no)
+AC_MSG_RESULT(["GLOBUS found $have_globus"])
+
 # Set GLite Properties
 AC_GLITE
 AC_GLITE_VERSION
 
 # Look for xsltproc & manpage stylesheets
-#GLITE_DOCBOOK_MAN
-# including the M4 file inline, since it is not defined in gLite:
+# start-of: doocbook_man.m4
 dnl
 dnl GLITE_DOCBOOK_MAN
 dnl
@@ -89,10 +93,9 @@ EOF
 	fi
 	AM_CONDITIONAL([HAVE_DOCBOOK_MAN], [test "$glite_cv_docbook_man" = yes])
 ])
+# end-of: doocbook_man.m4
 
-have_globus=no
-AC_GLOBUS([], have_globus=yes, have_globus=no)
-AC_MSG_RESULT([Globus found $have_globus])
+GLITE_DOCBOOK_MAN
 
 # Location of the HTML documentation
 AC_ARG_WITH([htmldir],
