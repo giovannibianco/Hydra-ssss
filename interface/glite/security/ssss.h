@@ -3,6 +3,7 @@
  *
  * Based on "How to Share a Secret", by Adi Shamir, Communications of
  * the ACM, November, 1979, Volume 22, Number 11, page 612.
+ * See also http://en.wikipedia.org/wiki/Secret_sharing
  *
  * SSS provides a perfect \f$(t,n)\f$-threshold secret sharing scheme.
  * i.e. it is a method for \f$n\f$ parties to carry shares \f$s_i\f$ of
