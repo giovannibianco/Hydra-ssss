@@ -10,7 +10,7 @@
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: shamir.c,v 1.4 2006-08-15 15:24:53 taspelie Exp $
+ * $Id: shamir.c,v 1.5 2006-08-16 16:05:56 taspelie Exp $
  */
 
 #include "ssssI.h"
@@ -346,4 +346,37 @@ unsigned char * glite_security_ssss_join_keys(unsigned char **keysf,
   return jKey;
 }
 
+// ============          glite_security_ssss_split_passwd   =============================================
+/** Routine for splitting a ascii key using SSSS. Returns a char ** with split hex strings */
+unsigned char ** glite_security_ssss_split_passwd(unsigned char * keyf,
+						  unsigned int nShares, unsigned int nNeeded) {
+  unsigned char *hexKey;
+  unsigned char **keys;
+
+  // Convert ascii to hex
+  hexKey=ascii2hex(keyf);
+  // Submit hex key
+  keys=glite_security_ssss_split_key(hexKey,nShares,nNeeded);
+
+  return keys;
+}
+
+// ============          glite_security_ssss_join_passwd   =============================================
+/** Routine for joining an ascii key using SSSS*/
+unsigned char * glite_security_ssss_join_passwd(unsigned char **keysf,
+						unsigned int nShares){
+  unsigned char *hexKey;
+  unsigned char *asciiKey;
+  
+  // Find joined hex key
+  hexKey = glite_security_ssss_join_keys(keysf,nShares);
+  if(hexKey!=NULL){
+    // Convert hex to ascii
+    asciiKey=hex2ascii(hexKey);
+  }else{
+    asciiKey=NULL;
+  }
+
+  return asciiKey;
+}
 // vim:set ts=2 sw=2 et:
