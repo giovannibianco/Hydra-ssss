@@ -31,6 +31,10 @@ int inverseModulo(long n, long *in);
 int lengthTest(int keyLength);
 /**Test for valid hex characters */
 int hextest(char x);
+/**Conversion of ascii string to valid hex string */
+unsigned char *ascii2hex(unsigned char *asciiKey);
+/**Conversion of ascii string to valid hex string */
+unsigned char *hex2ascii(unsigned char *hexKey);
 
 /* Name of the environment variable holding the log level. */
 #define SSSSEnv_LOG_LEVEL      "GLITE_SSSS_LOG_LEVEL"
