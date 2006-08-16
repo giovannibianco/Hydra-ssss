@@ -13,7 +13,7 @@
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: joinKey.c,v 1.5 2006-08-15 15:51:10 szamsu Exp $
+ * $Id: joinKey.c,v 1.6 2006-08-16 15:50:20 szamsu Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -31,7 +31,7 @@
 static void print_usage_and_die (int exit_code) {
     printf("\n");
     printf("<%s> Version %s by (C) EGEE\n", PROGNAME, PACKAGE_VERSION);
-    printf("usage: %s [-q] [-h] (join-key|NULL)...\n", PROGNAME);
+    printf("usage: %s [-q] [-h] [-V] (join-key|NULL)...\n", PROGNAME);
     printf("Examples:\n");
     printf("To recover key: 64aa67e55e5a52ac704b58bb0e1c2695\n");
     printf("Key with size 32 chars, need two keys to recover secret and I may have e.g. keys 3 and 4.\n");
@@ -49,10 +49,14 @@ int main(int argc, char** argv){
   unsigned char *jKey;
   unsigned char ** keys;
 
-  while ((flag = getopt (argc, argv, "hq")) != -1) {
+  while ((flag = getopt (argc, argv, "hqV")) != -1) {
     switch (flag) {
       case 'h':
         print_usage_and_die(EXIT_SUCCESS);
+        break;
+      case 'V':
+        printf("<%s> Version %s by (C) EGEE\n", PROGNAME, PACKAGE_VERSION);
+        exit(EXIT_SUCCESS);
         break;
       case 'q':
         verbose = 0;
