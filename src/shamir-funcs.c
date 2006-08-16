@@ -10,7 +10,7 @@
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: shamir-funcs.c,v 1.2 2006-08-15 14:22:51 szamsu Exp $
+ * $Id: shamir-funcs.c,v 1.3 2006-08-16 16:04:49 taspelie Exp $
  */
 
 #include "ssssI.h"
@@ -97,4 +97,81 @@ int hextest(char x){
   return 1;
 }
 
+/** Converting an ascii string to a valid hex string */
+unsigned char *ascii2hex(unsigned char *keyf){
+  unsigned char *hexkey;
+  char hexbit[3];
+  char bit[5];
+  int ascii,len,i,j,hexlen;
+
+  len=strlen(keyf);
+  // Find length for hexstring
+  hexlen=len*2;
+  // If not dividable by 4, add 2 extra chars to make sure of a hextstring with chunks of 4 chars
+  if(hexlen%4!=0) hexlen=hexlen+2;
+ 
+  // Allocate memory for hexkey
+  hexkey = malloc((hexlen+4)*sizeof(unsigned char *));
+
+  // Inset length of string
+  for(i=0;i<4;i++) bit[i]='0';
+  bit[4]='\0';
+  sprintf(bit,"%4x",len);
+  for(i=0;i<4;i++)*(hexkey+i)=bit[i];
+
+  // Loop chars
+  for (i=0;i<(hexlen/2);i++){
+    if(i<len){
+      ascii = (int) keyf[i];      
+    }else{
+      ascii = 0;
+    }
+
+    for(j=0;j<2;j++) hexbit[j]='0';
+    hexbit[2]='\0';
+    sprintf(hexbit,"%2x",ascii);
+    
+    // Insert string from char no 4
+    for(j=0;j<2;j++)*(hexkey+4+(i*2)+j)=hexbit[j];
+  }
+  *(hexkey+hexlen+4)='\0';
+  // Substitut ' ' with '0'
+  for (i=0;i<(hexlen+4);i++){
+    if(*(hexkey+i)==' ') *(hexkey+i)='0';
+  }
+
+  return hexkey;
+}
+
+/** Converting a hex string to a valid ascii string */
+unsigned char *hex2ascii(unsigned char *keyf){
+  unsigned char *asciikey;
+  char hexbit[3];
+  char bit[5];
+  int ascii,len,i,j;
+  char asciichar;
+  
+  // Find the length of the ascii string
+  for(i=0;i<4;i++) bit[i]=*(keyf+i);
+  bit[4]='\0';
+  len = (int) strtol(bit,NULL,16);
+
+  // Allocate memory for asciikey
+  asciikey = malloc(len*sizeof(unsigned char *));
+  
+  // Loop chars
+  for (i=0;i<len;i++){
+    // Use hexvalues 4 to 4+(len*2) in chunks of 2
+    for(j=0;j<2;j++) hexbit[j]=*(keyf+4+(i*2)+j);
+    hexbit[2]='\0';
+    ascii = strtol(hexbit,NULL,16);
+    asciichar = (char) ascii;
+    
+    // Insert char into asciikey
+    *(asciikey+i)=asciichar;
+  }
+  *(asciikey+len)='\0';
+  
+  return asciikey;
+}
 // vim:set ts=2 sw=2 et:
