@@ -6,14 +6,12 @@
  * http://eu-egee.org/license.html
  *
  * Testprogram for Shamir secret sharing scheme 
- * (joining for given split keys (NULL for not known keys))
- *
- * Usage:  ./joinKey splitKey1 splitKey2 .... splitKeyN
+ * (joining for given split password parts (NULL for not known keys))
  *
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: joinPasswd.c,v 1.1 2006-08-16 16:02:51 taspelie Exp $
+ * $Id: joinPasswd.c,v 1.2 2006-08-17 11:04:44 taspelie Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -33,11 +31,11 @@ static void print_usage_and_die (int exit_code) {
     printf("<%s> Version %s by (C) EGEE\n", PROGNAME, PACKAGE_VERSION);
     printf("usage: %s [-q] [-h] (join-key|NULL)...\n", PROGNAME);
     printf("Examples:\n");
-    printf("To recover password: 64aa67e55e5a52ac704b58bb0e1c2695\n");
-    printf("Key with size 32 chars, need two keys to recover secret and I may have e.g. keys 3 and 4.\n");
-    printf("./%s NULL NULL c9952de5f904a1939c223e6bc866dd7e 40986fe02ca1bbe0aabf8af65bdec526\n", PROGNAME);
-    printf("Recover a custom password 12345678 with size 8 chars. Need 3 split passwords to recover the key and have split password 1,2 and 5..\n");
-    printf("./%s NULL 6fbc0334 d2ecd103 NULL NULL ce4a189d\n", PROGNAME);
+    printf("To recover password: #%&lkXYt\n");
+    printf("Need two parts of the split password but have 5.\n");
+    printf("%s 8190b6ea2758da88d522 03274abe284449c750df 84afde832930b8f7cc8d 064672572a1c2836484a 87ce062b2b089766c3f8\n", PROGNAME);
+    printf("Need two parts to recover the password and have split part 2 and 4\n");
+    printf("%s NULL 03274abe284449c750df NULL 064672572a1c2836484a\n", PROGNAME);
   exit(exit_code); 
 }
 

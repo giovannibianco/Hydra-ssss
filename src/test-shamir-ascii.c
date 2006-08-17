@@ -7,18 +7,19 @@
  *
  * Testprogram for Shamir secret sharing scheme 
  *      (splitting and joining for all shares)
- * Usage: ./test-shamir nShares nNeeded key
  *
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: test-shamir-ascii.c,v 1.1 2006-08-16 16:01:10 taspelie Exp $
+ * $Id: test-shamir-ascii.c,v 1.2 2006-08-17 11:05:11 taspelie Exp $
  */
 
 #include <glite/security/ssss.h>
 #include "stdlib.h"
 #include "stdio.h"
 #include "string.h"
+
+#define PROGNAME "test-shamir-ascii"
 
 // =============================     MAIN    ================================================
 /**  Testprogram for Shamir secret sharing scheme   */
@@ -31,13 +32,12 @@ int main(int argc, char** argv){
   unsigned char ** keys;
 
   if(argc < 3){
-    printf("Usage: progname nShares nNeeded key");
-    printf("\nExamples: ");
-    printf("\n5 split keys 2 are needed to unlock");
-    printf("\n./test-shamir-ascii 5 2 hijklmnoabcdefgh");
-    printf("\n7 split keys, 3 are needed to unlock.");
-    printf("\n./test-shamir-ascii 7 3 abc+?<8");
-    printf("\n");
+    printf("Usage: progname nShares nNeeded key\n");
+    printf("Examples: (NOTE: \" marks are needed if shell variables are included in the password string)\n");
+    printf("5 split passwords 2 are needed to unlock\n");
+    printf("%s 5 2 \"#%&lkXYt\"\n",PROGNAME);
+    printf("7 split keys, 3 are needed to unlock.\n");
+    printf("%s 7 3 \"#%&lkXYt\"\n",PROGNAME);
     exit(EXIT_FAILURE);
   }
 
@@ -45,7 +45,7 @@ int main(int argc, char** argv){
   nNeeded= (unsigned int) atoi(argv[2]);
   key = argv[3];
 
-  printf("\nKey to split (%d of %d): %s", nNeeded, nShares, key);
+  printf("\nPassword to split (%d of %d): %s", nNeeded, nShares, key);
   
   // Split keys
   keys = glite_security_ssss_split_passwd(key, nShares, nNeeded);
@@ -54,19 +54,19 @@ int main(int argc, char** argv){
     return 1;
   }
 
-  printf("\n\nSplit keys:");
+  printf("\n\nSplit passwords:");
   for(i=0;i<nShares;i++){
     printf("\nx = %i splitKey = %s",i+1,keys[i]);
   }
   
-  // Join keys
+  // Join passwords
   jKey = glite_security_ssss_join_passwd(keys, nShares);
   if(jKey==NULL){
     printf("\n\nError in joining password. Check logfile");
     return 2;
   }
 
-  printf("\n\nJoined key : %s\n",jKey);
+  printf("\n\nJoined password : %s\n",jKey);
 
   i = strcmp(key, jKey);
   if (0 == i) {

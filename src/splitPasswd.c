@@ -5,13 +5,13 @@
  * For license conditions see the license file or
  * http://eu-egee.org/license.html
  *
- * Testprogram for Shamir secret sharing scheme (splitting for all shares)
- * Usage:  ./splitKey nShares nNeeded key
+ * Testprogram for Shamir secret sharing scheme 
+ * (splitting of an ascii password)
  *
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: splitPasswd.c,v 1.1 2006-08-16 16:03:30 taspelie Exp $
+ * $Id: splitPasswd.c,v 1.2 2006-08-17 11:04:55 taspelie Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -29,11 +29,11 @@ static void print_usage_and_die (int exit_code) {
   printf("\n");
   printf("<%s> Version %s by (C) EGEE\n", PROGNAME, PACKAGE_VERSION);
   printf("usage: %s [-q] [-h] <nShares> <nNeeded> <key>\n", PROGNAME);
-  printf("Examples: ");
+  printf("Examples: (NOTE: \" marks are needed if shell variables are included in the password string)");
   printf("5 split passwords 2 are needed to unlock\n");
-  printf("./%s 5 2 1234567812345678\n", PROGNAME);
+  printf("%s 5 2 \"#%&lkXYt\"\n", PROGNAME);
   printf("7 split paswords, 3 are needed to find original password.\n");
-  printf("./%s 7 3 12345678\n", PROGNAME);
+  printf("%s 7 3 \"#%&lkXYt\"\n", PROGNAME);
   exit(exit_code); 
 }
 
