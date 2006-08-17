@@ -11,7 +11,7 @@
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: splitKey.c,v 1.6 2006-08-16 15:50:20 szamsu Exp $
+ * $Id: splitKey.c,v 1.7 2006-08-17 11:03:56 taspelie Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -31,9 +31,9 @@ static void print_usage_and_die (int exit_code) {
   printf("usage: %s [-q] [-h] [-V] <nShares> <nNeeded> <key>\n", PROGNAME);
   printf("Examples: ");
   printf("5 split keys 2 are needed to unlock\n");
-  printf("./%s 5 2 1234567812345678\n", PROGNAME);
+  printf("%s 5 2 1234567812345678\n", PROGNAME);
   printf("7 split keys, 3 are needed to unlock.\n");
-  printf("./%s 7 3 12345678\n", PROGNAME);
+  printf("%s 7 3 12345678\n", PROGNAME);
   exit(exit_code); 
 }
 

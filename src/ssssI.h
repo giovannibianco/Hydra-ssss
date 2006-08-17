@@ -33,7 +33,7 @@ int lengthTest(int keyLength);
 int hextest(char x);
 /**Conversion of ascii string to valid hex string */
 unsigned char *ascii2hex(unsigned char *asciiKey);
-/**Conversion of ascii string to valid hex string */
+/**Conversion of hex string to valid ascii string */
 unsigned char *hex2ascii(unsigned char *hexKey);
 
 /* Name of the environment variable holding the log level. */

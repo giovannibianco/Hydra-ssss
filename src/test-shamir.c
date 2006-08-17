@@ -12,13 +12,15 @@
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: test-shamir.c,v 1.5 2006-08-15 15:25:20 taspelie Exp $
+ * $Id: test-shamir.c,v 1.6 2006-08-17 11:04:20 taspelie Exp $
  */
 
 #include <glite/security/ssss.h>
 #include "stdlib.h"
 #include "stdio.h"
 #include "string.h"
+
+#define PROGNAME "test-shamir"
 
 // =============================     MAIN    ================================================
 /**  Testprogram for Shamir secret sharing scheme   */
@@ -31,13 +33,12 @@ int main(int argc, char** argv){
   unsigned char ** keys;
 
   if(argc < 3){
-    printf("Usage: progname nShares nNeeded key");
-    printf("\nExamples: ");
-    printf("\n5 split keys 2 are needed to unlock");
-    printf("\n./test-shamir 5 2 123456781234678");
-    printf("\n7 split keys, 3 are needed to unlock.");
-    printf("\n./test-shamir 7 3 12345678");
-    printf("\n");
+    printf("Usage: progname nShares nNeeded key\n");
+    printf("Examples: \n");
+    printf("5 split keys 2 are needed to unlock\n");
+    printf("%s 5 2 123456781234678\n",PROGNAME);
+    printf("7 split keys, 3 are needed to unlock.\n");
+    printf("%s 7 3 12345678\n",PROGNAME);
     exit(EXIT_FAILURE);
   }
 

@@ -13,7 +13,7 @@
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: joinKey.c,v 1.6 2006-08-16 15:50:20 szamsu Exp $
+ * $Id: joinKey.c,v 1.7 2006-08-17 11:03:44 taspelie Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -35,9 +35,9 @@ static void print_usage_and_die (int exit_code) {
     printf("Examples:\n");
     printf("To recover key: 64aa67e55e5a52ac704b58bb0e1c2695\n");
     printf("Key with size 32 chars, need two keys to recover secret and I may have e.g. keys 3 and 4.\n");
-    printf("./%s NULL NULL c9952de5f904a1939c223e6bc866dd7e 40986fe02ca1bbe0aabf8af65bdec526\n", PROGNAME);
+    printf("%s NULL NULL c9952de5f904a1939c223e6bc866dd7e 40986fe02ca1bbe0aabf8af65bdec526\n", PROGNAME);
     printf("Recover a custom key 12345678 with size 8 chars. Need 3 split keys to recover the key and have split keys 1,2 and 5..\n");
-    printf("./%s NULL 6fbc0334 d2ecd103 NULL NULL ce4a189d\n", PROGNAME);
+    printf("%s NULL 6fbc0334 d2ecd103 NULL NULL ce4a189d\n", PROGNAME);
   exit(exit_code); 
 }
 
