@@ -7,7 +7,7 @@ set -e
 
 #KEY32=$(./glite-ssss-generate-key 32)
 # Need a not hex test. overriding:
-KEY32="abcdefghijklmopqrstuvwxyz#¤&/()"
+KEY32="abcdefghijklmnopqrstuvwxyz#+&/()"
 ./test-shamir-ascii 5 2  $KEY32
 
 KEY8=$(./glite-ssss-generate-key 8)
