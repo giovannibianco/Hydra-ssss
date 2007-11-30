@@ -10,7 +10,7 @@
  * Authors: 
  *      Trygve Aspelien <trygve.aspelien@bccs.uib.no>
  *
- * $Id: shamir.c,v 1.5 2006-08-16 16:05:56 taspelie Exp $
+ * $Id: shamir.c,v 1.6 2007-11-30 17:05:21 szamsu Exp $
  */
 
 #include "ssssI.h"
@@ -64,9 +64,20 @@ unsigned char ** glite_security_ssss_split_key(unsigned char * keyf,
 
   // Allocate splitkeys
   keysf = (unsigned char **) malloc(nShares*sizeof(char *));
+  if (!keysf) {
+    SSSS_I_log4c_ERROR("Error allocate memory");
+    return NULL;
+  }
   for(i=0;i<nShares;i++){
-    keysf[i]=(unsigned char *)malloc(keyLength*sizeof(char));
+    keysf[i]=(unsigned char *)malloc((keyLength+1)*sizeof(char));
+    if (!keysf[i]) {
+      SSSS_I_log4c_ERROR("Error allocate memory");
+      while(--i >= 0) free(keysf[i]);
+      free(keysf);
+      return NULL;
+    }
   } 
+
   // Initialize splitKeys
   for(i=0;i<nShares;i++){
     for(j=0;j<keyLength;j++){
@@ -219,8 +230,11 @@ unsigned char * glite_security_ssss_join_keys(unsigned char **keysf,
 
   // Setting loop variable
   nBytes= (unsigned int) keyLength/4;
-  jKey=malloc(sizeof(char)*keyLength);
-  
+  jKey=malloc(sizeof(char)*(keyLength+1));
+  if (!jKey) {
+    SSSS_I_log4c_ERROR("Error allocate memory");
+    return NULL;
+  }
   
 
   for(i=0;i<(nBytes*4);i++) *(jKey+i)='0';
