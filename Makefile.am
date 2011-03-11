@@ -6,13 +6,13 @@
 #  Main Makefile.am file for the gLite security ssss component
 #
 #  Authors: Akos Frohner <Akos.Frohner@cern.ch>
-#  Version info: $Id: Makefile.am,v 1.1.1.1 2006-08-04 14:56:01 szamsu Exp $
+#  Version info: $Id: Makefile.am,v 1.2 2011-03-11 12:30:09 jwhite Exp $
 #  Release: $Name: not supported by cvs2svn $
 
 # Location of the macro files
 ACLOCAL_AMFLAGS = -I project
 
-SUBDIRS	= src interface doc
+SUBDIRS	= src interface
 
 docdir = $(datadir)/doc/$(PACKAGE)
 dist_doc_DATA = RELEASE-NOTES LICENSE
