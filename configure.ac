@@ -4,7 +4,7 @@
 #  For license conditions see the license file or http://eu-egee.org/license.html
 #
 #  Authors: Akos Frohner <Akos.Frohner@cern.ch>
-#  Version info: $Id: configure.ac,v 1.4 2006-08-16 12:05:10 szamsu Exp $
+#  Version info: $Id: configure.ac,v 1.5 2011-03-11 12:59:07 jwhite Exp $
 #  Release: $Name: not supported by cvs2svn $
 # 
 #
@@ -20,7 +20,7 @@ AC_CONFIG_SRCDIR([src/Makefile.am])
 AC_COPYRIGHT([Copyright (c) 2004 The EU EGEE Project
 See LICENCE file for details
 ])
-AC_REVISION([$Revision: 1.4 $])
+AC_REVISION([$Revision: 1.5 $])
 
 #Environment.
 WORKDIR=`pwd`
@@ -44,9 +44,9 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
 # Set Globus Properties
-have_globus=no
-AC_GLOBUS([], have_globus=yes, have_globus=no)
-AC_MSG_RESULT(["GLOBUS found $have_globus"])
+# have_globus=no
+# AC_GLOBUS([], have_globus=yes, have_globus=no)
+# AC_MSG_RESULT(["GLOBUS found $have_globus"])
 
 # Set GLite Properties
 AC_GLITE
